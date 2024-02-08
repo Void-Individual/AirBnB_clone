@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import json
-from models.base_model import BaseModel
 
 """Module to control serialization and deserialization of Json files"""
 
@@ -22,7 +21,6 @@ class FileStorage:
 
         key = f'{obj.__class__.__name__}.{obj.id}'
         self.__objects[key] = obj
-        print(self.__objects)
 
     def save(self):
         """Serializes objects into a json file"""
@@ -40,9 +38,10 @@ class FileStorage:
         try:
             with open(self.__file_path, 'r') as file:
                 new_object = json.load(file)
-        except FileNotFoundError:
+        except Exception:
             return
 
+        from models.base_model import BaseModel
         for key, value in new_object.items():
             class_name, obj_id = key.split('.')
             obj_dict = value

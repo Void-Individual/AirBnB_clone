@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import uuid
 from datetime import datetime
+from models import storage
 
 """Module to for the base class of all hbnb objects"""
 
@@ -46,7 +47,6 @@ class BaseModel:
         """Method to update the updated at value"""
 
         self.updated_at = datetime.now()
-        print("Saving")
         storage.save()
 
     def to_dict(self):

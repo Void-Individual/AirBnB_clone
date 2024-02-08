@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import uuid
-import datetime
+from datetime import datetime
+from models import storage
 
 """Module to for the base class of all hbnb objects"""
 
@@ -11,14 +12,29 @@ class BaseModel:
     to be used in sub classes
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Instantiating the class with values for id,
         the time and day created and the last updates done
         in the class"""
 
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
+        if kwargs:
+            for key, value in kwargs.items():
+                date_format = "%Y-%m-%dT%H:%M:%S.%f"
+                if key == 'created_at':
+                    created = datetime.fromisoformat(kwargs['created_at'])
+                    setattr(self, key, created)
+                elif key == 'updated_at':
+                    updated = datetime.fromisoformat(kwargs['updated_at'])
+                    setattr(self, key, updated)
+                elif key == '__class__':
+                    pass
+                else:
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
+            storage.new(self)
 
     def __str__(self):
         """Method to print details of the class"""
@@ -30,7 +46,9 @@ class BaseModel:
     def save(self):
         """Method to update the updated at value"""
 
-        self.updated_at = datetime.datetime.now()
+        self.updated_at = datetime.now()
+        print("Saving")
+        storage.save()
 
     def to_dict(self):
         """Returns a dict of the key/value pairs of the instance"""

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import json
+from models.base_model import BaseModel
 
 """Module to control serialization and deserialization of Json files"""
 
@@ -42,6 +43,8 @@ class FileStorage:
         except FileNotFoundError:
             return
 
-        self.__objects = {}
         for key, value in new_object.items():
-            self.__objects[key] = value
+            class_name, obj_id = key.split('.')
+            obj_dict = value
+            obj = eval(class_name)(**obj_dict)
+            self.__objects[key] = obj

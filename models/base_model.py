@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import uuid
 from datetime import datetime
-from models import storage
 
 """Module to for the base class of all hbnb objects"""
 

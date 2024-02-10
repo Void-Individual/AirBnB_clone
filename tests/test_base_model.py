@@ -3,8 +3,8 @@ import unittest
 from datetime import datetime
 from models.base_model import BaseModel
 
-
 """Unittest module for the BaseModel module"""
+
 
 class TestBaseModel(unittest.TestCase):
     """Class to run different tests for the Basemodel

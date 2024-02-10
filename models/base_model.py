@@ -54,7 +54,10 @@ class BaseModel:
 
         dic = self.__dict__
         dic['__class__'] = self.__class__.__name__
-        dic['created_at'] = self.created_at.isoformat()
-        dic['updated_at'] = self.updated_at.isoformat()
+        try:
+            dic['created_at'] = self.created_at.isoformat()
+            dic['updated_at'] = self.updated_at.isoformat()
+        except AttributeError:
+            pass
 
         return dic

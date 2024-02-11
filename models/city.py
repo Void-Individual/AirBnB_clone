@@ -1,9 +1,14 @@
 #!/usr/bin/python3
-"""Defines the City class."""
 from models.base_model import BaseModel
+
+"""Module to handle the City class"""
 
 
 class City(BaseModel):
-    """Represents a city."""
-    state_id = ""
-    name = ""
+    """Class to handle city instances"""
+
+    state_id = ''
+    name = ''
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

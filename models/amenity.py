@@ -1,8 +1,13 @@
 #!/usr/bin/python3
-"""Defines the Amenity class."""
 from models.base_model import BaseModel
+
+"""Module to handle the amenity class"""
 
 
 class Amenity(BaseModel):
-    """Represents an amenity."""
-    name = ""
+    """Class to handle amenity instances"""
+
+    name = ''
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

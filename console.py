@@ -2,6 +2,12 @@
 import cmd
 import json
 from models import storage
+from models.user import User
+from models.place import Place
+from models.amenity import Amenity
+from models.city import City
+from models.review import Review
+from models.state import State
 from models.base_model import BaseModel
 
 """Module containing the program for the command interpreter"""
@@ -10,12 +16,19 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd, BaseModel):
     """Class to oversee the command interpreter"""
 
-    __file_path = 'file.json'
+    valid_classes = {'BaseModel': BaseModel,
+                     'User': User,
+                     'Place': Place,
+                     'Amenity': Amenity,
+                     "City": City,
+                     'Review': Review,
+                     "State": State
+                     }
 
     def __init__(self):
         """Instantiate the loop with a prompt everytime"""
         super().__init__()
-        self.prompt = '(hbnb)'
+        self.prompt = '(hbnb) '
 
     def help_create(self):
         """Method to overwrite given documentation"""
@@ -26,10 +39,10 @@ class HBNBCommand(cmd.Cmd, BaseModel):
     def do_create(self, cl=None):
         """Method to control the creation of a new instance"""
 
-        if cl == "BaseModel":
-            BM = BaseModel()
+        if cl in self.valid_classes:
+            active_class = self.valid_classes[cl]()
             storage.save()
-            print(BM.id)
+            print(active_class.id)
         elif cl == '':
             print("** class name missing **")
         else:
@@ -51,19 +64,20 @@ class HBNBCommand(cmd.Cmd, BaseModel):
         try:
             cl, id = arg.split(' ')
         except Exception:
-            if arg == "BaseModel":
+            if cl in self.valid_classes:
                 print("** instance id missing **")
             else:
                 print("** class doesn't exist **")
             return
 
-        if cl == "BaseModel":
+        if cl in self.valid_classes:
             if id == '':
                 print("** instance id missing **")
             else:
                 try:
                     instance_id = f"{cl}.{id}"
-                    value = storage.__objects[instance_id]
+                    stored = storage.all()
+                    value = stored[instance_id]
                     print(value)
                 except Exception:
                     print("** no instance found **")
@@ -86,13 +100,14 @@ class HBNBCommand(cmd.Cmd, BaseModel):
         try:
             cl, id = arg.split(' ')
         except Exception:
-            if arg == "BaseModel":
+            if cl in self.valid_classes:
                 print("** instance id missing **")
             else:
                 print("** class doesn't exist **")
             return
-        if cl == "BaseModel":
-            saved_instances = storage.__objects
+
+        if cl in self.valid_classes:
+            saved_instances = storage.all()
             try:
                 instance_id = f"{cl}.{id}"
                 del(saved_instances[instance_id])
@@ -106,19 +121,84 @@ class HBNBCommand(cmd.Cmd, BaseModel):
     def do_all(self, arg):
         """Method to print str of all saved instances"""
 
-        if arg == '' or arg == 'BaseModel':
-            try:
-                with open(self.__file_path, 'r') as file:
-                    saved_instances = json.load(file)
-                    for instance in saved_instances.keys():
-                        key = json.dumps(instance)
-                        value = json.dumps(saved_instances[instance])
-                        print("{}: {}".format(key, value))
-            except Exception:
-                pass
+        stored = storage.all()
+        list_st = []
+        if arg == '':
+            for key in stored.keys():
+                value = stored[key]
+                st = f"{value}"
+                list_st.append(st)
+            if len(list_st) != 0:
+                print("{}".format(list_st))
+        elif arg in self.valid_classes:
+            for key in stored.keys():
+                cl_name, inst_id = key.split('.')
+                if cl_name == arg:
+                    value = stored[key]
+                    st = f"{value}"
+                    list_st.append(st)
+            if len(list_st) != 0:
+                print("{}".format(list_st))
+
         else:
             print("** class doesn't exist **")
 
+    def help_update(self):
+        """Method to overwrite the default help"""
+
+        print("\nUpdates or add attributes to an instance")
+        print('Usage: update <class name> <id>'
+              ' <attribute name> "<attribute value>"\n')
+
+    def do_update(self, arg):
+        """Method to add or update attributes of an instance"""
+
+        if arg == '':
+            print("** class name missing **")
+            return
+
+        split_arg = arg.split()
+        cl = ''
+        id = ''
+        att_name = ''
+        att_value = ''
+        for idx, st in enumerate(split_arg):
+            if idx == 0:
+                cl = st
+            elif idx == 1:
+                id = st
+            elif idx == 2:
+                att_name = st
+            elif idx == 3:
+                att_value = st
+            elif idx > 3:
+                break
+
+        if cl not in self.valid_classes:
+            print("** class doesn't exist **")
+            return
+
+        if id == '':
+            print("** instance id missing **")
+            return
+
+        stored = storage.all()
+        instance_id = f"{cl}.{id}"
+        try:
+            obj = stored[instance_id]
+        except Exception:
+            print("** no instance found **")
+            return
+
+        if att_name == '':
+            print("** attribute name missing **")
+            return
+
+        if att_value == '':
+            print("** value missing **")
+            return
+
+        setattr(obj, att_name, att_value)
 
 
 

@@ -12,7 +12,7 @@ class BaseModel:
     to be used in sub classes
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """Instantiating the class with values for id,
         the time and day created and the last updates done
         in the class"""
@@ -40,7 +40,8 @@ class BaseModel:
         """Method to print details of the class"""
 
         class_name = self.__class__.__name__
-        st = f"[{class_name}] ({self.id}) {self.__dict__}"
+        att = {key: value for key, value in self.__dict__.items() if key != '__class__'}
+        st = f"[{class_name}] ({self.id}) {att}"
         return st
 
     def save(self):
@@ -52,12 +53,9 @@ class BaseModel:
     def to_dict(self):
         """Returns a dict of the key/value pairs of the instance"""
 
-        dic = self.__dict__
+        dic = self.__dict__.copy()
         dic['__class__'] = self.__class__.__name__
-        try:
-            dic['created_at'] = self.created_at.isoformat()
-            dic['updated_at'] = self.updated_at.isoformat()
-        except AttributeError:
-            pass
+        dic['created_at'] = self.created_at.isoformat()
+        dic['updated_at'] = self.updated_at.isoformat()
 
         return dic

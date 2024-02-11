@@ -41,7 +41,14 @@ class FileStorage:
         except Exception:
             return
 
+        self.__objects = {}
         from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.amenity import Amenity
+        from models.city import City
+        from models.review import Review
+        from models.state import State
         for key, value in new_object.items():
             class_name, obj_id = key.split('.')
             obj_dict = value

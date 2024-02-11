@@ -13,17 +13,12 @@ from models.base_model import BaseModel
 """Module containing the program for the command interpreter"""
 
 
-class HBNBCommand(cmd.Cmd):
+class HBNBCommand(cmd.Cmd, BaseModel):
     """Class to oversee the command interpreter"""
 
-    valid_classes = {'BaseModel': BaseModel,
-                     'User': User,
-                     'Place': Place,
-                     'Amenity': Amenity,
-                     "City": City,
-                     'Review': Review,
-                     "State": State
-                     }
+    valid_classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                     'Amenity': Amenity, "City": City, 'Review': Review,
+                     "State": State}
 
     def __init__(self):
         """Instantiate the loop with a prompt everytime"""
@@ -35,33 +30,25 @@ class HBNBCommand(cmd.Cmd):
                     'update': self.do_update
                     }
 
-    def default(self, arg):
-        """To overwrite the parent default"""
+    def parseline(self, command):
+        """Mthd to split the commands"""
 
-        id = ''
-        try:
-            args = arg.split('.')
-            cl_name = args[0]
-            if '(' not in args[1] or ')' not in args[1]:
-                raise Exception
-            commands = args[1].split('(')
-        except Exception:
-            print("*** Unknown syntax: {}".format(arg))
-            return False
-        method = commands[0]
-        if commands[1] != ')':
-            id_split = commands[1].split(')')
-            id = id_split[0]
-        if method in self.commands.keys():
-            if commands[1] != ')':
-                id_split = commands[1].split(')')
-                id = id_split[0]
-                return self.commands[method](f"{cl_name} {id}")
-            return self.commands[method](f"{cl_name}{id}")
-        print("*** Unknown syntax: {}".format(arg))
-        return False
-
-
+        args = shlex.split(command)
+        if args:
+            arg = args[0]
+            if arg == 'all':
+                if len(args) > 1 and args[1].endswith('.all()'):
+                    class_name = args[1][:-6].strip()  # Extract class name
+                    self.do_all(class_name)  # Call do_all with class name
+                else:
+                    print("Invalid command format. Use <class name>.all()")
+            elif arg in self.commands:
+                self.commands[arg](' '.join(args[1:]))
+            else:
+                print("Unknown command")
+        else:
+            print("Empty cmd")
+        return None, None, command 
 
     def help_create(self):
         """Method to overwrite given documentation"""
@@ -153,6 +140,9 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """Method to print str of all saved instances"""
+
+        if arg.endswith('.all()'):
+            print('check')
         stored = storage.all()
         list_st = []
         if arg == '':

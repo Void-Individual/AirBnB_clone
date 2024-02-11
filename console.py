@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+
+"""Module containing the program for the command interpreter"""
+
 import cmd
 import shlex
 from models import storage
@@ -10,7 +13,6 @@ from models.review import Review
 from models.state import State
 from models.base_model import BaseModel
 
-"""Module containing the program for the command interpreter"""
 
 
 class HBNBCommand(cmd.Cmd):
@@ -30,10 +32,12 @@ class HBNBCommand(cmd.Cmd):
 
         super().__init__()
         self.prompt = '(hbnb) '
-        self.commands = {'all': self.do_all, 'create': self.do_create,
-                    'show': self.do_help, 'destroy': self.do_destroy,
-                    'update': self.do_update
-                    }
+        self.commands = {'all': self.do_all,
+                         'create': self.do_create,
+                         'show': self.do_help,
+                         'destroy': self.do_destroy,
+                         'update': self.do_update
+                         }
 
     def default(self, arg):
         """To overwrite the parent default"""
@@ -60,8 +64,6 @@ class HBNBCommand(cmd.Cmd):
             return self.commands[method](f"{cl_name}{id}")
         print("*** Unknown syntax: {}".format(arg))
         return False
-
-
 
     def help_create(self):
         """Method to overwrite given documentation"""

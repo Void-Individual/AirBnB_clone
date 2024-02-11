@@ -2,10 +2,16 @@
 """Module for FileStorage class."""
 import json
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class FileStorage:
-    """Serializes instances to a JSON file and deserializes JSON file to instances."""
+    """Serializes and deserializes JSON file to instances."""
 
     __file_path = "file.json"
     __objects = {}
@@ -34,8 +40,27 @@ class FileStorage:
                 objects_dict = json.load(file)
                 for key, value in objects_dict.items():
                     class_name, obj_id = key.split('.')
-                    obj_dict = value
-                    obj = eval(class_name)(**obj_dict)
+                    if class_name == "BaseModel":
+                        obj_dict = value
+                        obj = BaseModel(**obj_dict)
+                    elif class_name == "User":
+                        obj_dict = value
+                        obj = User(**obj_dict)
+                    elif class_name == "Place":
+                        obj_dict = value
+                        obj = Place(**obj_dict)
+                    elif class_name == "State":
+                        obj_dict = value
+                        obj = State(**obj_dict)
+                    elif class_name == "City":
+                        obj_dict = value
+                        obj = City(**obj_dict)
+                    elif class_name == "Amenity":
+                        obj_dict = value
+                        obj = Amenity(**obj_dict)
+                    elif class_name == "Review":
+                        obj_dict = value
+                        obj = Review(**obj_dict)
                     FileStorage.__objects[key] = obj
         except FileNotFoundError:
             pass

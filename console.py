@@ -131,6 +131,8 @@ class HBNBCommand(cmd.Cmd):
             return
         all_objects = storage.all()
         key = "{}.{}".format(command[0], command[1])
+        key = key.split(',')
+        key = key[0]
         if key not in all_objects:
             print("** no instance found **")
             return
@@ -138,11 +140,13 @@ class HBNBCommand(cmd.Cmd):
         if len(command) < 3:
             print("** attribute name missing **")
             return
-        attr = command[2]
+        attr = command[2].split(',')
+        attr = attr[0]
         if len(command) < 4:
             print("** value missing **")
             return
-        value = command[3]
+        value = command[3].split(',')
+        value = value[0]
         setattr(obj, attr, value)
         obj.save()
 

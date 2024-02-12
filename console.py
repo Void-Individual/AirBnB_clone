@@ -23,6 +23,7 @@ class HBNBCommand(cmd.Cmd):
     valid_classes = [
         "BaseModel", "User", "Place", "State", "City", "Amenity", "Review"
     ]
+    valid_cmd = ['create', 'show', 'update', 'all', 'destroy', 'count']
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
@@ -36,6 +37,16 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Do nothing on empty input line"""
         pass
+
+    def precmd(self, arg):
+        """parses command input"""
+        if '.' in arg and '(' in arg and ')' in arg:
+            cls = arg.split('.')
+            cmd = cls[1].split('(')
+            args = cmd[1].split(')')
+            if cls[0] in self.valid_classes and cmd[0] in self.valid_cmd:
+                arg = cmd[0] + ' ' + cls[0] + ' ' + args[0]
+        return arg
 
     def do_create(self, arg):
         """Creates a new instance of BaseModel, saves it, and prints the id"""

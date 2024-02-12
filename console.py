@@ -88,19 +88,23 @@ class HBNBCommand(cmd.Cmd):
         """Prints all string representations of all instances"""
         all_objects = storage.all()
         command = shlex.split(arg)
+        ls = []
         if len(command) == 0:
             for key, value in all_objects.items():
-                print(str(value))
+                ls.append(str(value))
+            if len(ls) != 0:
+                print(ls)
         elif command[0] not in self.valid_classes:
             print("** class doesn't exist **")
         else:
             class_name = command[0]
-            class_instances = storage.all(class_name)
-            if class_instances:
-                for instance in class_instances.values():
-                    print(instance)
-            else:
-                print("** no instances found **")
+            for key in all_objects.keys():
+                instance = key.split('.')
+                if class_name == instance[0]:
+                    value = all_objects[key]
+                    ls.append(str(value))
+            if len(ls) != 0:
+                print(ls)
 
     def do_update(self, arg):
         """Updates an instance"""

@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+Module for the interpreter
+"""
+
 import shlex
 import cmd
 from models import storage
@@ -12,6 +16,9 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
+    """
+    Interpreter class
+    """
     prompt = '(hbnb) '
     valid_classes = [
         "BaseModel", "User", "Place", "State", "City", "Amenity", "Review"

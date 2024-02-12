@@ -122,29 +122,29 @@ class HBNBCommand(cmd.Cmd):
         command = shlex.split(arg)
         if len(command) == 0:
             print("** class name missing **")
-        elif command[0] not in self.valid_classes:
+            return
+        if command[0] not in self.valid_classes:
             print("** class doesn't exist **")
-        elif len(command) < 2:
+            return
+        if len(command) < 2:
             print("** instance id missing **")
-        elif len(command) < 3:
-            print("** dictionary missing **")
-        else:
-            all_objects = storage.all()
-            key = "{}.{}".format(command[0], command[1])
-            if key not in all_objects:
-                print("** no instance found **")
-            else:
-                obj = all_objects[key]
-                try:
-                    dict_representation = eval(command[2])
-                    if not isinstance(dict_representation, dict):
-                        raise ValueError
-                except (SyntaxError, ValueError):
-                    print("** invalid dictionary representation **")
-                else:
-                    for attr, value in dict_representation.items():
-                        setattr(obj, attr, value)
-                    obj.save()
+            return
+        all_objects = storage.all()
+        key = "{}.{}".format(command[0], command[1])
+        if key not in all_objects:
+            print("** no instance found **")
+            return
+        obj = all_objects[key]
+        if len(command) < 3:
+            print("** attribute name missing **")
+            return
+        attr = command[2]
+        if len(command) < 4:
+            print("** value missing **")
+            return
+        value = command[3]
+        setattr(obj, attr, value)
+        obj.save()
 
     def do_count(self, arg):
         """Counts the number of instances of a class"""
@@ -154,7 +154,7 @@ class HBNBCommand(cmd.Cmd):
         elif command[0] not in self.valid_classes:
             print("** class doesn't exist **")
         else:
-            class_instances = storage.all(command[0])
+            class_instances = storage.all()
             print(len(class_instances))
 
 

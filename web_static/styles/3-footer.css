@@ -1,0 +1,12 @@
+footer {
+    background-color: white;
+    height: 60px;
+    width: 100%;
+    border-top: 1px #CCCCCC;
+    bottom: 0;
+    text-align: center; /* Horizontally center the text */
+    position: fixed; /* Fixes the footer position at the bottom of the viewport */
+    display: flex; /* Enables flexbox layout */
+    justify-content: center; /* Horizontally center the content within the flex container*/
+    align-items: center; /* Vertically centers the content within the flex container */
+}
